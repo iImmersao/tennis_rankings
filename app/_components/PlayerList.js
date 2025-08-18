@@ -3,10 +3,11 @@ import { getRankings } from "../_lib/data-service";
 import PlayerListSelector from "./PlayerListSelector";
 
 async function PlayerList({ searchParams, tableName }) {
-  const country = searchParams?.country ?? "all";
-  const date = searchParams?.date ?? "all";
-  const page = parseInt(searchParams.page) || 1;
-  const pageSize = parseInt(searchParams.pageSize) || "all";
+  const awaitedSearchParams = await searchParams;
+  const country = awaitedSearchParams?.country ?? "all";
+  const date = awaitedSearchParams?.date ?? "all";
+  const page = parseInt(awaitedSearchParams.page);
+  const pageSize = parseInt(awaitedSearchParams.pageSize);
 
   const players = await getRankings(tableName, country, date, page, pageSize);
 
