@@ -1,7 +1,6 @@
-import { UsersIcon } from "@heroicons/react/24/solid";
-import Link from "next/link";
+import { getFlag } from "../_lib/data-service";
 
-function PlayerCard({ playerRec, background }) {
+async function PlayerCard({ playerRec, background }) {
   const {
     id,
     start_date,
@@ -15,14 +14,22 @@ function PlayerCard({ playerRec, background }) {
     country_ranking,
   } = playerRec;
 
+  //console.log("Will fetch flag for " + country);
+  const flag =
+    country === "Country" || country === "" ? "" : await getFlag(country);
+
   return (
     <div
       className={
         background !== null ? background : "odd:bg-green-500 even:bg-green-800"
       }
     >
-      <div className="grid sm:grid-cols-7 md:grid-cols-7 gap-1 lg:gap-2 xl:gap-3">
+      <div className="grid sm:grid-cols-8 md:grid-cols-8 gap-1 lg:gap-2 xl:gap-3">
         <div className="flex items-center mb-2">{ranking}</div>
+
+        <div className="flex items-center mb-2">
+          {flag !== "" ? <img src={flag} width="30" height="20" /> : ""}
+        </div>
 
         <div className="flex items-center mb-2">{player}</div>
 

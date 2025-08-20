@@ -24,7 +24,7 @@ export const getRankings = async function (
 ) {
   const pageSizeToUse =
     !pageSize || pageSize === "all" ? Number.MAX_SAFE_INTEGER : pageSize;
-  const start = page ? (page - 1) * pageSizeToUse : 1;
+  const start = page ? (page - 1) * pageSizeToUse : 0;
   const end = start + pageSizeToUse;
 
   let query = supabase
@@ -53,8 +53,26 @@ export const getRankings = async function (
 };
 
 export const getPlayerCountries = async function (tableName) {
+  let countryTable;
+  switch (tableName) {
+    case "atp_rankings":
+      countryTable = "atp_singles_countries";
+      break;
+    case "atp_doubles_rankings":
+      countryTable = "atp_doubles_countries";
+      break;
+    case "wta_rankings":
+      countryTable = "wta_singles_countries";
+      break;
+    case "wta_doubles_rankings":
+      countryTable = "wta_doubles_countries";
+      break;
+    default:
+      throw new Error("Countries could not be loaded - invalid table name");
+  }
+
   const { data, error } = await supabase
-    .from(tableName)
+    .from(countryTable)
     .select("country")
     .order("country");
 
@@ -75,10 +93,28 @@ export const getPlayerCountries = async function (tableName) {
 };
 
 export const getAvailableDates = async function (tableName) {
+  let dateTable;
+  switch (tableName) {
+    case "atp_rankings":
+      dateTable = "atp_singles_dates";
+      break;
+    case "atp_doubles_rankings":
+      dateTable = "atp_doubles_dates";
+      break;
+    case "wta_rankings":
+      dateTable = "wta_singles_dates";
+      break;
+    case "wta_doubles_rankings":
+      dateTable = "wta_doubles_dates";
+      break;
+    default:
+      throw new Error("Dates could not be loaded - invalid table name");
+  }
+
   const { data, error } = await supabase
-    .from(tableName)
+    .from(dateTable)
     .select("start_date")
-    .order("start_date");
+    .order("start_date", { ascending: false });
 
   if (error) {
     console.error(error);
@@ -95,6 +131,32 @@ export const getAvailableDates = async function (tableName) {
 
   return dates;
 };
+
+export async function getFlag(countryCode) {
+  try {
+    const res = await fetch(
+      "https://restcountries.com/v3.1/alpha/" + countryCode + "?fields=flags"
+    );
+    if (typeof res === "undefined") {
+      console.log("Failed to get country flag JSON info");
+      return "";
+    }
+    const flagData = await res.json();
+    if (typeof flagData === "undefined") {
+      console.log("Didn't find flag info");
+      return "";
+    }
+    const { flags } = flagData;
+    if (typeof flags === "undefined") {
+      console.log("Did not find the flag URL for " + countryCode);
+      return "";
+    }
+    const { png, svg, alt } = flags;
+    return png;
+  } catch {
+    throw new Error("Could not fetch flag for country code " + countryCode);
+  }
+}
 
 export async function getCountries() {
   try {

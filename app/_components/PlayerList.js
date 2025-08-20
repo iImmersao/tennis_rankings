@@ -1,14 +1,22 @@
 import PlayerCard from "@/app/_components/PlayerCard";
-import { getRankings } from "../_lib/data-service";
+import {
+  getRankings,
+  getAvailableDates,
+  getPlayerCountries,
+  getNumberOfPlayers,
+} from "../_lib/data-service";
 import PlayerListSelector from "./PlayerListSelector";
 
 async function PlayerList({ searchParams, tableName }) {
+  const dates = (await getAvailableDates(tableName)) ?? [];
+  const countries = (await getPlayerCountries(tableName)) ?? [];
   const awaitedSearchParams = await searchParams;
   const country = awaitedSearchParams?.country ?? "all";
-  const date = awaitedSearchParams?.date ?? "all";
+  const date = awaitedSearchParams?.date ?? dates[0];
   const page = parseInt(awaitedSearchParams.page);
   const pageSize = parseInt(awaitedSearchParams.pageSize);
 
+  const numPlayers = await getNumberOfPlayers(tableName, country, date);
   const players = await getRankings(tableName, country, date, page, pageSize);
 
   const headings = {
@@ -29,10 +37,12 @@ async function PlayerList({ searchParams, tableName }) {
   return (
     <div>
       <PlayerListSelector
-        tableName={tableName}
         country={country}
         date={date}
         pageSize={pageSize}
+        countries={countries}
+        dates={dates}
+        numPlayers={numPlayers}
       />
 
       <PlayerCard
