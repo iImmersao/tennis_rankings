@@ -41,11 +41,6 @@ function PlayerListSelector({
       : numPlayers % filters.pageSize === 0
       ? numPlayers / filters.pageSize
       : Math.floor(numPlayers / filters.pageSize + 1);
-  console.log("Calculated totalPages as: " + totalPages);
-  console.log("Using:");
-  console.log(
-    "numPlayers = " + numPlayers + ", pageSize = " + filters.pageSize
-  );
 
   // Sync *only when the actual query string content changes*
   useEffect(() => {
@@ -71,7 +66,6 @@ function PlayerListSelector({
   }
 
   function updateFilter(name, value) {
-    console.log(`Updating field ${name} with value=${value}`);
     setFilters((prev) => {
       let next = { ...prev, [name]: value };
       if (name !== "page") {

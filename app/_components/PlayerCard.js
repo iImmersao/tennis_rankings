@@ -1,4 +1,6 @@
+import { pl } from "date-fns/locale";
 import { getFlag } from "../_lib/data-service";
+import PlayerLink from "./PlayerLink";
 
 async function PlayerCard({ playerRec, background }) {
   const {
@@ -14,7 +16,6 @@ async function PlayerCard({ playerRec, background }) {
     country_ranking,
   } = playerRec;
 
-  //console.log("Will fetch flag for " + country);
   const flag =
     country === "Country" || country === "" ? "" : await getFlag(country);
 
@@ -31,7 +32,9 @@ async function PlayerCard({ playerRec, background }) {
           {flag !== "" ? <img src={flag} width="30" height="20" /> : ""}
         </div>
 
-        <div className="flex items-center mb-2">{player}</div>
+        <div className="flex items-center mb-2">
+          <PlayerLink playerName={player} country={country} />
+        </div>
 
         <div className="flex items-center mb-2">{age}</div>
 

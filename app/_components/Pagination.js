@@ -3,46 +3,12 @@
 import Link from "next/link";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
 
-// export default function Pagination({ totalPages }) {
-//   const searchParams = useSearchParams();
-//   const router = useRouter();
-//   const pathname = usePathname();
-//   const activeFilter = searchParams.get("page") ?? "all";
-
-//   function handleFilter(filter) {
-//     const params = new URLSearchParams(searchParams);
-//     params.set("page", filter);
-//     router.replace(`${pathname}?${params.toString()}`, { scroll: false });
-//   }
-
-//   return (
-//     <div>
-//       {Array.from({ length: totalPages }, (_, i) => (
-//         <Button
-//           filter={i + 1}
-//           handleFilter={handleFilter}
-//           activeFilter={activeFilter}
-//           key={i + 1}
-//         >
-//           {i + 1}
-//         </Button>
-//       ))}
-//     </div>
-//   );
-// }
-
 function getPageNumbers(current, total, maxVisible) {
-  console.log("Parameters provided to getPageNumbers():");
-  console.log(current + ", " + total + ", " + maxVisible);
   const pages = [];
   const half = Math.floor(maxVisible / 2);
-  console.log("Value of half = " + half);
 
   let start = Math.max(2, current - half);
-  console.log(`Value of total - 1 = ${total - 1}`);
-  console.log(`Value of current + half = ${current + half}`);
   let end = Math.min(total - 1, current + half);
-  console.log("Calculated start/end pages: " + start + "/" + end);
 
   if (current <= half) {
     start = 2;
@@ -70,13 +36,11 @@ export default function Pagination({
 }) {
   const pathname = usePathname();
 
-  console.log("Maximum number of visible pages = " + maxVisible);
   const pages = getPageNumbers(
     page ? parseInt(page) : 1,
     totalPages,
     maxVisible
   );
-  console.log("Number of pages to be displayed: " + pages.length);
 
   return (
     <div style={{ display: "flex", gap: "0.5rem" }}>

@@ -4,10 +4,19 @@ import { supabase } from "./supabase";
 // GET
 
 export const getPlayerHistory = async function (tableName, player, country) {
-  let query = supabase
+  const { data, error } = await supabase
     .from(tableName)
     .select("start_date, ranking, rank_change, points")
+    .eq("player", player)
+    .eq("country", country)
     .order("start_date");
+
+  if (error) {
+    console.error("Failed to find player history");
+    return [];
+  }
+
+  return data;
 };
 
 export const getNumberOfPlayers = async function (tableName, country, date) {
