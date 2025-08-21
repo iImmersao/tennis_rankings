@@ -13,7 +13,10 @@ async function PlayerList({ searchParams, tableName }) {
   const awaitedSearchParams = await searchParams;
   const country = awaitedSearchParams?.country ?? "all";
   const date = awaitedSearchParams?.date ?? dates[0];
-  const page = parseInt(awaitedSearchParams.page);
+  console.log("Page number from params = " + awaitedSearchParams.page);
+  const page = awaitedSearchParams.page
+    ? parseInt(awaitedSearchParams.page)
+    : 1;
   const pageSize = parseInt(awaitedSearchParams.pageSize);
 
   const numPlayers = await getNumberOfPlayers(tableName, country, date);
@@ -39,6 +42,7 @@ async function PlayerList({ searchParams, tableName }) {
       <PlayerListSelector
         country={country}
         date={date}
+        page={page}
         pageSize={pageSize}
         countries={countries}
         dates={dates}

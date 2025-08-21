@@ -8,7 +8,7 @@ import { useEffect, useMemo, useState } from "react";
 import ResetFilters from "./ResetFilters";
 
 // List the filter keys you support:
-const KEYS = ["pageSize", "date", "country"];
+const KEYS = ["page", "pageSize", "date", "country"];
 const pageSizes = [10, 25, 50, 100];
 
 function parseFromString(qsString) {
@@ -21,16 +21,12 @@ function parseFromString(qsString) {
 function PlayerListSelector({
   country,
   date,
+  page,
   pageSize,
   countries,
   dates,
   numPlayers,
 }) {
-  const totalPages =
-    numPlayers % pageSize === 0
-      ? numPlayers / pageSize
-      : numPlayers / pageSize + 1;
-
   const router = useRouter();
   const pathname = usePathname();
   const sp = useSearchParams();
@@ -38,6 +34,18 @@ function PlayerListSelector({
 
   // Local source of truth for the UI
   const [filters, setFilters] = useState(() => parseFromString(spString));
+
+  const totalPages =
+    filters.pageSize === ""
+      ? 1
+      : numPlayers % filters.pageSize === 0
+      ? numPlayers / filters.pageSize
+      : Math.floor(numPlayers / filters.pageSize + 1);
+  console.log("Calculated totalPages as: " + totalPages);
+  console.log("Using:");
+  console.log(
+    "numPlayers = " + numPlayers + ", pageSize = " + filters.pageSize
+  );
 
   // Sync *only when the actual query string content changes*
   useEffect(() => {
@@ -63,8 +71,12 @@ function PlayerListSelector({
   }
 
   function updateFilter(name, value) {
+    console.log(`Updating field ${name} with value=${value}`);
     setFilters((prev) => {
-      const next = { ...prev, [name]: value };
+      let next = { ...prev, [name]: value };
+      if (name !== "page") {
+        next = { ...next, ["page"]: 1 };
+      }
       router.replace(toUrl(next), { scroll: false });
       return next;
     });
@@ -113,7 +125,16 @@ function PlayerListSelector({
         </div>
       </div>
 
-      <Pagination totalPages={totalPages} />
+      {totalPages > 1 ? (
+        <Pagination
+          page={parseInt(filters.page)}
+          totalPages={totalPages}
+          pageSize={filters.pageSize}
+          onChange={updateFilter}
+        />
+      ) : (
+        ""
+      )}
     </div>
   );
 }

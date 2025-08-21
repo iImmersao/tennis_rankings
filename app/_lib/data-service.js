@@ -132,7 +132,13 @@ export const getAvailableDates = async function (tableName) {
   return dates;
 };
 
+const flagCache = {};
+
 export async function getFlag(countryCode) {
+  if (flagCache[countryCode]) {
+    return flagCache[countryCode];
+  }
+
   try {
     const res = await fetch(
       "https://restcountries.com/v3.1/alpha/" + countryCode + "?fields=flags"
@@ -152,9 +158,12 @@ export async function getFlag(countryCode) {
       return "";
     }
     const { png, svg, alt } = flags;
+    flagCache[countryCode] = png;
     return png;
   } catch {
-    throw new Error("Could not fetch flag for country code " + countryCode);
+    //throw new Error("Could not fetch flag for country code " + countryCode);
+    console.error("Could not fetch flag for country code " + countryCode);
+    return "";
   }
 }
 
