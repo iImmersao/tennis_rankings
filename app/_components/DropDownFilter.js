@@ -9,12 +9,12 @@ export default function DropDownFilter({
 }) {
   return (
     <label style={{ display: "flex", flexDirection: "column", gap: 4 }}>
-      <span style={{ fontSize: 12 }}>{label}</span>
+      <span style={{ fontWeight: 700, fontSize: 12 }}>{label}</span>
       <select
         name={name}
         value={value}
         onChange={(e) => onChange(name, e.target.value)}
-        style={{ padding: 6, minWidth: 160 }}
+        style={{ color: "#222", fontWeight: "500", padding: 6, minWidth: 160 }}
       >
         <option value="">-- Any --</option>
         {options.map((o) => (

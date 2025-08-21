@@ -22,7 +22,7 @@ async function PlayerCard({ playerRec, background }) {
   return (
     <div
       className={
-        background !== null ? background : "odd:bg-green-500 even:bg-green-800"
+        background !== null ? background : "odd:bg-green-700 even:bg-green-900"
       }
     >
       <div className="grid sm:grid-cols-8 md:grid-cols-8 gap-1 lg:gap-2 xl:gap-3">

@@ -57,7 +57,7 @@ async function PlayerList({ searchParams, tableName }) {
         {players.map((player) => (
           <PlayerCard
             playerRec={player}
-            background={"odd:bg-green-500 even:bg-green-800"}
+            background={"odd:bg-green-700 even:bg-green-900"}
             key={player.id}
           />
         ))}
